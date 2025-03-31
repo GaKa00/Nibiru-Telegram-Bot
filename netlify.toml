@@ -1,0 +1,5 @@
+[functions]
+included_files = ["index.js"]
+
+[build]
+publish = "static"
