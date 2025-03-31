@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ngrok/ngrok": "^1.4.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "ngrok": "^5.0.0-beta.2",
     "node-telegram-bot-api": "^0.66.0"
   }
 }
