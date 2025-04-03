@@ -1,3 +1,5 @@
+import { setupEventListeners } from "./services/fluencr";
+
 const ngrok = require('@ngrok/ngrok');
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
@@ -8,12 +10,16 @@ app.use(express.json());
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(token, { webHook: true });
+const chatId = process.env.CHAT_ID || '';
 
 
 app.post(`/bot${token}`, (req, res) => {
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });
+
+setupEventListeners(bot, chatId,)
+  .then(() => console.log('All Fluencr event listeners started.'));
 
 
 
