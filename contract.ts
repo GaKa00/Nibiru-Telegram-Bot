@@ -2,16 +2,17 @@ import { ethers } from "ethers";
 import { FluencrPackPolygonAddress, oneMonthIXTStakingAddress } from "./address";
 import { ContractContext as IXTStakingContract} from "./types/ixtStakingContract";
 import { provider } from "./services/alchemy";
+import { stakingABI } from "./ABI/stakingAbi";
 
 
-export const createFluencrPackContract = () => {
-    return new ethers.Contract(
-        FluencrPackPolygonAddress || '0x0',
-        FluencrPackABI.abi,
-            provider
-        ) as unknown;
+// export const createFluencrPackContract = () => {
+//     return new ethers.Contract(
+//         FluencrPackPolygonAddress || '0x0',
+//         FluencrPackABI.abi,
+//             provider
+//         ) as unknown;
     
-}
+// }
 
 
 export const createOneMonthIXTStakingContract = () => {

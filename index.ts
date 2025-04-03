@@ -1,16 +1,17 @@
-import { setupEventListeners } from "./services/fluencr";
+require('dotenv').config()
+import ngrok from '@ngrok/ngrok'; 
+import TelegramBot  from 'node-telegram-bot-api'; 
+import express, { response } from 'express'; 
+import { setupEventListeners } from './services/fluencr';
 
-const ngrok = require('@ngrok/ngrok');
-const TelegramBot = require('node-telegram-bot-api');
-const express = require('express');
-require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 
-const token = process.env.TELEGRAM_BOT_TOKEN;
+const token: string = process.env.TELEGRAM_KEY|| (() => { throw new Error('environment variable "TELEGRAM_KEY" not defined'); })();
 const bot = new TelegramBot(token, { webHook: true });
 const chatId = process.env.CHAT_ID || '';
+
 
 
 app.post(`/bot${token}`, (req, res) => {
@@ -34,5 +35,16 @@ ngrok.connect({ addr: PORT, authtoken_from_env: true })
     console.log(`Ingress established at: ${listener.url()}`);
 
     const telegramWebhookUrl = `https://api.telegram.org/bot${token}/setWebhook?url=${listener.url()}`;
+
+
+fetch(telegramWebhookUrl)
+.then(response => {
+  if(!response){ throw new Error('Setting Telegram Webhook Failed')}
+  return response.json()
+
+}) 
+.then(data => {
+  console.log('Telegram webhook set Successfully', data)
+})
 
   });

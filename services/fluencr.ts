@@ -1,14 +1,16 @@
 import { ethers, parseUnits } from "ethers";
-import { createFluencrPackContract, createOneMonthIXTStakingContract } from "../contract"
-import { Telegraf } from "telegraf";
+import { createOneMonthIXTStakingContract } from "../contract"
+ //add createFluencrPackContract, 
+
 import { formatNumber } from "./utils";
+import TelegramBot from "node-telegram-bot-api";
 
 
 
 const oneMonthIXTStakingContract = createOneMonthIXTStakingContract();
 
 
-const listenForOneMonthIxtClaim = async (bot: Telegraf, chatId: string,) => {
+const listenForOneMonthIxtClaim = async (bot: TelegramBot, chatId: string,) => {
     return new Promise<void>((resolve, reject) => {
       oneMonthIXTStakingContract.on('RewardPaid',
         async (user: string, reward: BigInt) => {
@@ -22,11 +24,11 @@ const listenForOneMonthIxtClaim = async (bot: Telegraf, chatId: string,) => {
               const oneMonthClaimMessage = 
               `👤 User: ${user} \n` +
               `🟠 Claimed: <b>${formattedAmount} $IXT</b>!`;
-              bot.telegram.sendPhoto(chatId, oneMonthImageUrl, { parse_mode: 'HTML', caption: oneMonthClaimMessage });
+              bot.sendPhoto(chatId, oneMonthImageUrl, { parse_mode: 'HTML', caption: oneMonthClaimMessage });
               
               const thresholdAmount = 499;
               if (Number(formattedAmount) > thresholdAmount) {
-                bot.telegram.sendPhoto(chatId, oneMonthImageUrl, { parse_mode: 'HTML', caption: oneMonthClaimMessage });
+                bot.sendPhoto(chatId, oneMonthImageUrl, { parse_mode: 'HTML', caption: oneMonthClaimMessage });
               }          
             }
               resolve();
@@ -40,48 +42,48 @@ const listenForOneMonthIxtClaim = async (bot: Telegraf, chatId: string,) => {
   };
 
 
-const FluencrPackContract = createFluencrPackContract()
+// const FluencrPackContract = createFluencrPackContract()
 
-const listenForXLPackPurchase = ( bot:Telegraf , chatId: string,) => {
-    return new Promise<void>((resolve, reject) => {
+// const listenForXLPackPurchase = ( bot:TelegramBot , chatId: string,) => {
+//     return new Promise<void>((resolve, reject) => {
 
-        FluencrPackContract.on("buy",
-            async (user: string, value:bigint) => {
+//         FluencrPackContract.on("buy",
+//             async (user: string, value:bigint) => {
 
-                const thresholdUSD = parseUnits("800", 18);
+//                 const thresholdUSD = parseUnits("800", 18);
 
-         {
-             if (value >= thresholdUSD) {
+//          {
+//              if (value >= thresholdUSD) {
 
-                const XLPackPrice = parseUnits("899", 18); //Can probably be replaced with the contracts defined cost? 
-                const packAmount = Math.round(Number(value / XLPackPrice))
+//                 const XLPackPrice = parseUnits("899", 18); //Can probably be replaced with the contracts defined cost? 
+//                 const packAmount = Math.round(Number(value / XLPackPrice))
 
-                 try {
+//                  try {
                     
-                     const PurchaseImageUrl = "";
-                     const PurchaseMessage =`${packAmount} XL Packs just got bought by ${user.id} :money_with_wings::gem:
-`;
-                     bot.telegram.sendPhoto(chatId,PurchaseImageUrl,{caption: PurchaseMessage, parse_mode: 'HTML'});
-                     resolve();
-                 } catch (error) {
-                     console.error(error.message);
-                     reject();
+//                      const PurchaseImageUrl = "";
+//                      const PurchaseMessage =`${packAmount} XL Packs just got bought by ${user.id} :money_with_wings::gem:
+// `;
+//                      bot.sendPhoto(chatId,PurchaseImageUrl,{caption: PurchaseMessage, parse_mode: 'HTML'});
+//                      resolve();
+//                  } catch (error) {
+//                      console.error(error.message);
+//                      reject();
                      
-                 }
-             }
-             else resolve(); 
-        }
-    }
-    )  
-    })
-}
+//                  }
+//              }
+//              else resolve(); 
+//         }
+//     }
+//     )  
+//     })
+// }
 
 
-export const setupEventListeners = async (bot: Telegraf, chatId: string) => {
+export const setupEventListeners = async (bot: TelegramBot, chatId: string) => {
     const listenerPromises: Promise<void>[] = [];
   
     listenerPromises.push(
-        listenForXLPackPurchase(bot, chatId),
+        // listenForXLPackPurchase(bot, chatId),
         listenForOneMonthIxtClaim(bot, chatId), 
     );
   
